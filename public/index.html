@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real time | Websockets</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <form id="chat">
+        <input type="text" placeholder="Username" id="username" autocomplete="off">
+        <div class="messages" id="messagesContainer"></div>
+        <input type="text" placeholder="Message..." id="message" autocomplete="off">
+        <input type="submit" value="Send">
+    </form>
+    <script>
+        // endereço de IP na rede local
+        const socket = io('http://192.168.1.2:5000');
+
+        function renderMessage(message){
+            $('.messages').append(`<b>${message.username}:</b> ${message.message}<br>`);
+            $('#message').val('');
+        }
+
+        window.addEventListener('load', event => {
+            let lastUsername = localStorage.getItem('username');
+            $('#username').val(lastUsername);
+            if(lastUsername){
+                $('#message').focus();
+            }
+        })
+
+        $('#username').on('change', event => {
+            localStorage.setItem('username', event.target.value);
+        })
+
+        socket.on('previousMessages', messages => {
+            for(let message of messages){
+                renderMessage(message);
+            }
+        })
+
+        $('#messagesContainer').on('scroll', event => {
+            console.log(event.target.offsetHeight)
+        })
+
+        socket.on('receivedMessage', message => {
+            renderMessage(message);
+        });
+
+        $('#chat').on('submit', event => {
+            event.preventDefault();
+            
+            let username = $('#username').val();
+            let message = $('#message').val();
+
+            if(username && message){
+                const messageObject = {
+                    username,
+                    message
+                }
+                renderMessage(messageObject);
+                socket.emit('sendMessage', messageObject);
+            }
+        })
+    </script>
+</body>
+</html>
