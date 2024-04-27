@@ -17,7 +17,7 @@
     </form>
     <script>
         // endereço de IP na rede local
-        const socket = io('http://192.168.1.2:5000');
+        const socket = io('http://192.168.0.100:5000');
 
         function renderMessage(message){
             $('.messages').append(`<b>${message.username}:</b> ${message.message}<br>`);
