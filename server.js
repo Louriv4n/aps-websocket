@@ -26,6 +26,10 @@ io.on('connection', socket => {
         socket.broadcast.emit('receivedMessage', data);
     });
 
+    socket.on('newUser', username => {
+        io.emit("userJoined", username);
+    });
+
     socket.emit('previousMessages', messages);
 });
 
