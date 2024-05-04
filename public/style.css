@@ -1,11 +1,11 @@
-*{
+* {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
     color: #cad2c5;
 }
 
-body{
+body {
     display: grid;
     place-content: center;
     height: 100vh;
@@ -15,14 +15,16 @@ body{
     background-position: center;
 }
 
-form#chat{
+form#chat {
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
 }
 
-div.messages, input[type=text], input[type=submit]{
-    border: 2px solid #FCAF3C;
+div.messages,
+input[type=text],
+input[type=submit] {
+    border: 2px solid #fcaf3c;
     padding: 1rem;
     width: 32rem;
     font-size: 1.4rem;
@@ -31,24 +33,60 @@ div.messages, input[type=text], input[type=submit]{
     outline: none;
 }
 
-div.messages{
+div.messages {
     color: #cad2c5;
     height: 20rem;
     overflow: auto;
 }
 
-input{
+input {
     background: #001220;
 }
 
-input[type=submit]{
-    background-color: #FCAF3C;
+input[type=submit] {
+    background-color: #fcaf3c;
     color: #000000;
     cursor: pointer;
 }
 
-@media (max-width: 500px){
-    div.messages, input[type=text], input[type=submit]{
+@media (max-width: 500px) {
+    div.messages,
+    input[type=text],
+    input[type=submit] {
         width: 20rem;
+    }
+}
+
+.user-join-message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fcaf3c;
+    color: #000000;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+
+
+.info-box {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 300px;
+    left: 1100px;
+    color: #000000;
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+@media (max-width: 1200px) {
+    .info-box {
+        position: static;
+        margin-top: 10px;
+        left: auto;
+        width: 100%;
     }
 }

@@ -16,10 +16,50 @@
         <div class="messages" id="messagesContainer"></div>
         <input type="text" placeholder="Mensagem..." id="message" autocomplete="off">
         <input type="submit" value="Enviar">
+
+        <div id="infoBox" class="info-box">
+            <span id="userJoinedMessage"></span>
+        </div>
+        
     </form>
     <script>
-        // endereço de IP na rede local
-        const socket = io('http://192.168.68.108:5000');
+        const socket = io('http://192.168.0.100:5000');
+
+        // Função para exibir mensagem de entrada de usuário
+        function showInfoBox(username) {
+            const infoBox = document.getElementById('infoBox');
+            const message = document.createElement('div');
+            message.innerText = `${username} entrou na conversa`;
+
+            // Verifica se a mensagem já existe para evitar duplicatas
+            let existingMessage = infoBox.querySelector(`[data-username="${username}"]`);
+            if (!existingMessage) {
+                message.setAttribute('data-username', username); // Adiciona um atributo para identificar a mensagem
+                infoBox.appendChild(message); // Adiciona a mensagem à infoBox
+            } else {
+                // Se a mensagem já existe, apenas atualiza o texto do timestamp
+                existingMessage.innerText = `${username} entrou na conversa`;
+            }
+
+            // Mostra a div infoBox
+            infoBox.style.display = 'block';
+
+            // Define um temporizador para remover a mensagem após 5 segundos
+            setTimeout(() => {
+                // Remove a mensagem se ainda estiver presente
+                if (infoBox.contains(message)) {
+                    infoBox.removeChild(message);
+                }
+                // Esconde a div infoBox se não houver mais mensagens
+                if (infoBox.childNodes.length === 0) {
+                    infoBox.style.display = 'none';
+                }
+            }, 5000);
+        }
+
+        socket.on('userJoined', username => {
+            showInfoBox(username);
+        });
 
         function randomColor() {
             let colorsList = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff",
@@ -46,9 +86,9 @@
             let userColor = colorStorage(username);
 
             if (username === $('#username').val()) {
-                $('.messages').append(`<b style='color:${userColor}' class="user-message">${username}:</b> ${message.message}<br>`);
+                $('.messages').append(`<div style='color:${userColor}; text-align: right;' class="user-message">${username}: ${message.message}</div><br>`);
             } else {
-                $('.messages').append(`<b style='color:${userColor}' class="received-message">${username}:</b> ${message.message}<br>`);
+                $('.messages').append(`<div style='color:${userColor}; text-align: left;' class="received-message">${username}: ${message.message}</div><br>`);
             }
             $('#message').val('');
         }
@@ -63,10 +103,16 @@
         })
 
         $('#username').on('change', event => {
-            localStorage.setItem('username', event.target.value);
-            localStorage.setItem('userColor', randomColor());
+            const previousUsername = localStorage.getItem('username');
+            const newUsername = event.target.value;
+            localStorage.setItem('username', newUsername);
+            if (previousUsername !== newUsername) {
+                socket.emit('newUser', newUsername);
+            }
+            showInfoBox(newUsername);
         })
 
+        
         socket.on('previousMessages', messages => {
             for (let message of messages) {
                 renderMessage(message);

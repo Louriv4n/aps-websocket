@@ -13,6 +13,7 @@ app.set('views', path.join(__dirname, 'public'));
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 
+
 app.get('/', (req, res) => {
     res.render('index.html');
 });
@@ -24,6 +25,10 @@ io.on('connection', socket => {
     socket.on('sendMessage', data => {
         messages.push(data);
         socket.broadcast.emit('receivedMessage', data);
+    });
+
+    socket.on('newUser', username => {
+        io.emit("userJoined", username);
     });
 
     socket.emit('previousMessages', messages);
