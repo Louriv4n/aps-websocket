@@ -112,6 +112,7 @@
             showInfoBox(newUsername);
         })
 
+        
         socket.on('previousMessages', messages => {
             for (let message of messages) {
                 renderMessage(message);
