@@ -19,6 +19,7 @@ form#chat {
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
+    position: relative; /* Adjusted to use absolute positioning for .info-box */
 }
 
 div.messages,
@@ -70,23 +71,22 @@ input[type=submit] {
     z-index: 9999;
 }
 
-
 .info-box {
     display: flex;
     flex-direction: column;
-    position: absolute;
-    top: 300px;
-    left: 1100px;
+ 
+    position: static;
+    margin-top: 10px;
+    margin-left: 10px;
+    left: auto;
+    width: 100%;
+
     color: #000000;
     padding: 10px 20px;
-    border-radius: 10px;
+    transition: right 0.3s ease-in-out;
+    z-index: 999; /* Ensure it appears above other elements */
 }
 
-@media (max-width: 1200px) {
-    .info-box {
-        position: static;
-        margin-top: 10px;
-        left: auto;
-        width: 100%;
-    }
-}
+
+
+
